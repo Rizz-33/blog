@@ -1,40 +1,40 @@
 import { Button, Navbar, TextInput } from "flowbite-react";
 import React from "react";
 import { AiOutlineSearch } from "react-icons/ai";
-import { FaMoon } from "react-icons/fa";
+import { FaMoon, FaSearch } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 
 export default function Header() {
   const path = useLocation().pathname;
 
   return (
-    <Navbar className="border-b-2 pb-6 px-2 flex items-center justify-between">
+    <Navbar className="border-b-2">
       <Link
         to="/"
-        className="self-center whitespace-nowrap text-sm sm:text-xl font-bold dark:text-white"
+        className="self-center whitespace-nowrap text-sm sm:text-xl font-bold dark:text-white pb-6 pr-12"
       >
         Blog
-        <span className="bg-gradient-to-r from-red-400 to-violet-500 text-transparent bg-clip-text text-5xl">
+        <span className="bg-gradient-to-r from-pink-400 to-purple-500 text-transparent bg-clip-text text-5xl">
           .
         </span>
       </Link>
-      <form className="items-center hidden lg:inline">
+      <form>
         <TextInput
           type="text"
           placeholder="Search"
           icon={AiOutlineSearch}
-          className="mr-2"
+          className="hidden lg:inline"
         />
       </form>
       <Button className="w-12 h-10 lg:hidden" color="gray" pill>
-        <AiOutlineSearch />
+        <FaSearch />
       </Button>
       <div className="flex gap-2 md:order-2">
         <Button className="w-12 h-10 hidden sm:inline" color="gray" pill>
           <FaMoon />
         </Button>
         <Link to="/signin">
-          <Button gradientDuoTone="redToViolet" pill>
+          <Button gradientDuoTone="purpleToPink" pill>
             Sign In
           </Button>
         </Link>
