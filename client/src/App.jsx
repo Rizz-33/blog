@@ -26,9 +26,6 @@ export default function App() {
   return (
     <BrowserRouter>
       <Header />
-      <div className="message-container">
-        {message && <p className="message">{message}</p>}
-      </div>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
