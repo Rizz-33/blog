@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/Rizz-33/blog/go-backend/routes"
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -68,6 +69,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	routes.UserRoutes()
+
 	http.HandleFunc("/api/message", handler)
 	log.Println("Starting server on :8000")
 	log.Fatal(http.ListenAndServe(":8000", nil))
