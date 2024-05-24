@@ -2,27 +2,13 @@ package routes
 
 import (
 	"net/http"
+
+	"github.com/Rizz-33/blog/go-backend/controllers"
 )
 
 func UserRoutes() {
-	http.HandleFunc("/api/user", getUser)
-	http.HandleFunc("/api/user/create", createUser)
-	http.HandleFunc("/api/user/update", updateUser)
-	http.HandleFunc("/api/user/delete", deleteUser)
-}
-
-func getUser(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("User data retrieved"))
-}
-
-func createUser(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("User created"))
-}
-
-func updateUser(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("User updated"))
-}
-
-func deleteUser(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("User deleted"))
+	http.HandleFunc("/api/user", controllers.GetUser)
+	http.HandleFunc("/api/user/create", controllers.CreateUser)
+	http.HandleFunc("/api/user/update", controllers.UpdateUser)
+	http.HandleFunc("/api/user/delete", controllers.DeleteUser)
 }
