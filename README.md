@@ -1,4 +1,4 @@
-# Blog. README
+# Blog.
 
 ## Overview
 Blog. is a blog application built with React for the frontend, MongoDB for the database, and Go for the backend.
