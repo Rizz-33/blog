@@ -82,5 +82,44 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 }
 
 func SignIn(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Access-Control-Allow-Origin", "*")
+    w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
+    w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 
+    if r.Method == http.MethodOptions {
+        w.WriteHeader(http.StatusNoContent)
+        return
+    }
+
+    if r.Method != http.MethodPost {
+        http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+        return
+    }
+
+    var credentials struct {
+        Username string `json:"username"`
+        Password string `json:"password"`
+    }
+    if err := json.NewDecoder(r.Body).Decode(&credentials); err != nil {
+        http.Error(w, "Invalid request payload", http.StatusBadRequest)
+        return
+    }
+    defer r.Body.Close()
+
+    collection := database.Collection("users")
+
+    var user models.User
+    if err := collection.FindOne(context.Background(), bson.M{"username": credentials.Username}).Decode(&user); err != nil {
+        http.Error(w, "Invalid username or password", http.StatusUnauthorized)
+        return
+    }
+
+    if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(credentials.Password)); err != nil {
+        http.Error(w, "Invalid username or password", http.StatusUnauthorized)
+        return
+    }
+
+    response := map[string]string{"message": "Sign-in successful"}
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(response)
 }
