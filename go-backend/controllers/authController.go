@@ -3,7 +3,6 @@ package controllers
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -74,8 +73,6 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed to create user", http.StatusInternalServerError)
 		return
 	}
-
-	fmt.Printf("User signed up: %s\n", user.Username)
 
 	response := map[string]string{"message": "Sign-up successful"}
 	w.Header().Set("Content-Type", "application/json")

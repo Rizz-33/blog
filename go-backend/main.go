@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"log"
 	"net/http"
 	"os"
@@ -10,19 +9,11 @@ import (
 	"github.com/Rizz-33/blog/go-backend/controllers"
 	"github.com/Rizz-33/blog/go-backend/routes"
 	"github.com/joho/godotenv"
-	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var (
-	client   *mongo.Client
-	database *mongo.Database
-)
-
-type Response struct {
-	Message string `json:"message"`
-}
+var database *mongo.Database
 
 func withCORS(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -39,25 +30,6 @@ func withCORS(next http.Handler) http.Handler {
 	})
 }
 
-func handler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
-	var result Response
-	err := database.Collection("messages").FindOne(context.Background(), bson.M{}).Decode(&result)
-	if err != nil {
-		log.Println("Error fetching data from MongoDB:", err)
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
-		return
-	}
-
-	if result.Message == "" {
-		http.Error(w, "No data found", http.StatusNotFound)
-		return
-	}
-
-	json.NewEncoder(w).Encode(result)
-}
-
 func main() {
 	err := godotenv.Load(".env")
 	if err != nil {
@@ -69,7 +41,7 @@ func main() {
 		log.Fatal("MongoDB connection string not provided")
 	}
 
-	client, err = mongo.Connect(context.Background(), options.Client().ApplyURI(connectionString))
+	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(connectionString))
 	if err != nil {
 		log.Fatal("Failed to connect to database:", err)
 	}
@@ -85,10 +57,9 @@ func main() {
 	database = client.Database("test")
 	controllers.InitializeDatabase(database)
 
-	routes.AuthRoutes()
-
-	http.HandleFunc("/api/message", handler)
+	mux := http.NewServeMux()
+	routes.AuthRoutes(mux)
 
 	log.Println("Starting server on :8000")
-	log.Fatal(http.ListenAndServe(":8000", withCORS(http.DefaultServeMux)))
+	log.Fatal(http.ListenAndServe(":8000", withCORS(mux)))
 }

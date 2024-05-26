@@ -8,14 +8,23 @@ import (
 
 var jwtKey = []byte("your_secret_key")
 
-func GenerateJWTToken(username string) (string, error) {
-	claims := &jwt.StandardClaims{
-		ExpiresAt: time.Now().Add(24 * time.Hour).Unix(),
-		IssuedAt:  time.Now().Unix(),
-		Issuer:    "blog",
-		Subject:   username,
-	}
+type Claims struct {
+	Username string `json:"username"`
+	jwt.StandardClaims
+}
 
+func GenerateJWTToken(username string) (string, error) {
+	expirationTime := time.Now().Add(24 * time.Hour)
+	claims := &Claims{
+		Username: username,
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: expirationTime.Unix(),
+		},
+	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString(jwtKey)
+	tokenString, err := token.SignedString(jwtKey)
+	if err != nil {
+		return "", err
+	}
+	return tokenString, nil
 }
