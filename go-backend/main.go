@@ -88,6 +88,7 @@ func main() {
 	routes.AuthRoutes()
 
 	http.HandleFunc("/api/message", handler)
+
 	log.Println("Starting server on :8000")
 	log.Fatal(http.ListenAndServe(":8000", withCORS(http.DefaultServeMux)))
 }
