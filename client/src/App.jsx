@@ -1,5 +1,4 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import FooterSec from "./components/Footer";
 import Header from "./components/Header";
@@ -11,19 +10,6 @@ import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
 
 export default function App() {
-  const [message, setMessage] = useState("");
-
-  useEffect(() => {
-    axios
-      .get("http://localhost:8000/api/message")
-      .then((response) => {
-        setMessage(response.data.message);
-      })
-      .catch((error) => {
-        console.error("There was an error fetching the data!", error);
-      });
-  }, []);
-
   return (
     <BrowserRouter>
       <Header />
