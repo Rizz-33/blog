@@ -6,17 +6,16 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-var jwtKey = []byte("your-secret-key")
+var jwtKey = []byte("your_secret_key")
 
 func GenerateJWTToken(username string) (string, error) {
-    token := jwt.New(jwt.SigningMethodHS256)
-    claims := token.Claims.(jwt.MapClaims)
-    claims["username"] = username
-    claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
+	claims := &jwt.StandardClaims{
+		ExpiresAt: time.Now().Add(24 * time.Hour).Unix(),
+		IssuedAt:  time.Now().Unix(),
+		Issuer:    "blog",
+		Subject:   username,
+	}
 
-    tokenString, err := token.SignedString(jwtKey)
-    if err != nil {
-        return "", err
-    }
-    return tokenString, nil
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString(jwtKey)
 }
