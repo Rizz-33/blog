@@ -31,6 +31,7 @@ const Signin = () => {
       }
       const data = await res.json();
       setSuccess(data.message);
+      window.location.href = "/";
     } catch (error) {
       setError(error.message || "An error occurred. Please try again later.");
     } finally {
