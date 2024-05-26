@@ -31,11 +31,11 @@ const Signup = () => {
             </div>
             <div>
               <Label value="email" />
-              <TextInput type="text" placeholder="abc@xyz.com" id="email" />
+              <TextInput type="email" placeholder="abc@xyz.com" id="email" />
             </div>
             <div>
               <Label value="password" />
-              <TextInput type="text" placeholder="password" id="password" />
+              <TextInput type="password" placeholder="password" id="password" />
             </div>
             <Button gradientDuoTone="purpleToPink" type="submit" pill>
               Sign Up
