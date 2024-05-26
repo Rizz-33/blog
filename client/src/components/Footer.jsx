@@ -72,7 +72,7 @@ const FooterSec = () => {
               </Footer.LinkGroup>
             </div>
             <div className="pt-5">
-              <Footer.Title title="Follow us" />
+              <Footer.Title title="Legal" />
               <Footer.LinkGroup col>
                 <Footer.Link href="#">Privacy Policy</Footer.Link>
                 <Footer.Link href="#">Terms of Use</Footer.Link>
