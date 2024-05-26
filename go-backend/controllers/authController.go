@@ -20,20 +20,27 @@ func InitializeDatabase(db *mongo.Database) {
 }
 
 func SignUp(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+
+	if r.Method == http.MethodOptions {
+		w.WriteHeader(http.StatusNoContent)
+		return
+	}
+
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
-	if err := r.ParseForm(); err != nil {
-		http.Error(w, "Failed to parse form data", http.StatusBadRequest)
+	var user models.User
+	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
+		http.Error(w, "Invalid request payload", http.StatusBadRequest)
 		return
 	}
+	defer r.Body.Close()
 
-	var user models.User
-	user.Username = r.Form.Get("username")
-	user.Email = r.Form.Get("email")
-	user.Password = r.Form.Get("password")
 	user.Timestamp = time.Now()
 
 	if user.Username == "" || user.Email == "" || user.Password == "" {
@@ -70,5 +77,6 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("User signed up: %s\n", user.Username)
 
 	response := map[string]string{"message": "Sign-up successful"}
+	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
 }
