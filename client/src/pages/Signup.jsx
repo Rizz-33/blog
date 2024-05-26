@@ -6,6 +6,7 @@ const Signup = () => {
   const [formData, setFormData] = useState({});
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -15,6 +16,7 @@ const Signup = () => {
     e.preventDefault();
     setError(null);
     setSuccess(null);
+    setLoading(true);
     try {
       const res = await fetch("http://localhost:8000/api/signup", {
         method: "POST",
@@ -31,6 +33,8 @@ const Signup = () => {
       setSuccess(data.message);
     } catch (error) {
       setError(error.message || "An error occurred. Please try again later.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -83,8 +87,13 @@ const Signup = () => {
                 onChange={handleChange}
               />
             </div>
-            <Button gradientDuoTone="purpleToPink" type="submit" pill>
-              Sign Up
+            <Button
+              gradientDuoTone="purpleToPink"
+              type="submit"
+              pill
+              disabled={loading}
+            >
+              {loading ? "Signing Up..." : "Sign Up"}
             </Button>
             {error && <p className="text-red-500 mt-2">{error}</p>}
             {success && <p className="text-green-500 mt-2">{success}</p>}
