@@ -131,9 +131,12 @@ func SignIn(w http.ResponseWriter, r *http.Request) {
 	})
 
 	response := map[string]interface{}{
-		"message": "Sign-in successful",
-		"token":   token,
+		"message":  "Sign-in successful",
+		"username": user.Username,
+		"email":    user.Email,
+		"token":    token,
 	}
+	
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
 }
