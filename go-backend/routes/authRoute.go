@@ -8,4 +8,5 @@ import (
 
 func AuthRoutes() {
 	http.HandleFunc("/api/signup", controllers.SignUp)
+	http.HandleFunc("/api/signin", controllers.SignIn)
 }
