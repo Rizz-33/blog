@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/Rizz-33/blog/go-backend/models"
+	"github.com/Rizz-33/blog/go-backend/utils"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"golang.org/x/crypto/bcrypt"
@@ -82,44 +83,60 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 }
 
 func SignIn(w http.ResponseWriter, r *http.Request) {
-    w.Header().Set("Access-Control-Allow-Origin", "*")
-    w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
-    w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 
-    if r.Method == http.MethodOptions {
-        w.WriteHeader(http.StatusNoContent)
-        return
-    }
+	if r.Method == http.MethodOptions {
+		w.WriteHeader(http.StatusNoContent)
+		return
+	}
 
-    if r.Method != http.MethodPost {
-        http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-        return
-    }
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
 
-    var credentials struct {
-        Username string `json:"username"`
-        Password string `json:"password"`
-    }
-    if err := json.NewDecoder(r.Body).Decode(&credentials); err != nil {
-        http.Error(w, "Invalid request payload", http.StatusBadRequest)
-        return
-    }
-    defer r.Body.Close()
+	var credentials struct {
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&credentials); err != nil {
+		http.Error(w, "Invalid request payload", http.StatusBadRequest)
+		return
+	}
+	defer r.Body.Close()
 
-    collection := database.Collection("users")
+	collection := database.Collection("users")
 
-    var user models.User
-    if err := collection.FindOne(context.Background(), bson.M{"username": credentials.Username}).Decode(&user); err != nil {
-        http.Error(w, "Invalid username or password", http.StatusUnauthorized)
-        return
-    }
+	var user models.User
+	if err := collection.FindOne(context.Background(), bson.M{"username": credentials.Username}).Decode(&user); err != nil {
+		http.Error(w, "Invalid username or password", http.StatusUnauthorized)
+		return
+	}
 
-    if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(credentials.Password)); err != nil {
-        http.Error(w, "Invalid username or password", http.StatusUnauthorized)
-        return
-    }
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(credentials.Password)); err != nil {
+		http.Error(w, "Invalid username or password", http.StatusUnauthorized)
+		return
+	}
 
-    response := map[string]string{"message": "Sign-in successful"}
-    w.Header().Set("Content-Type", "application/json")
-    json.NewEncoder(w).Encode(response)
+	token, err := utils.GenerateJWTToken(user.Username)
+	if err != nil {
+		http.Error(w, "Failed to generate JWT token", http.StatusInternalServerError)
+		return
+	}
+
+	http.SetCookie(w, &http.Cookie{
+		Name:    "jwt",
+		Value:   token,
+		Expires: time.Now().Add(24 * time.Hour),
+		Path:    "/",
+	})
+
+	response := map[string]interface{}{
+		"message": "Sign-in successful",
+		"token":   token,
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
 }
