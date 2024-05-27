@@ -134,7 +134,7 @@ func SignIn(w http.ResponseWriter, r *http.Request) {
 	lastSignIn := time.Now()
 	_, err = collection.UpdateOne(context.Background(), bson.M{"username": user.Username}, bson.M{"$set": bson.M{"lastSignIn": lastSignIn}})
 	if err != nil {
-		http.Error(w, "Failed to update last sign-in time", http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError) // Update error handling
 		return
 	}
 
@@ -148,10 +148,10 @@ func SignIn(w http.ResponseWriter, r *http.Request) {
 	response := map[string]interface{}{
 		"message": "Sign-in successful",
 		"user": map[string]interface{}{
-			"id":        user.ID.Hex(),
-			"username":  user.Username,
-			"email":     user.Email,
-			"createdAt": user.Timestamp,
+			"id":         user.ID.Hex(),
+			"username":   user.Username,
+			"email":      user.Email,
+			"createdAt":  user.Timestamp,
 			"lastSignIn": lastSignIn,
 		},
 		"token": token,

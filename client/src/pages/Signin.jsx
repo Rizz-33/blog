@@ -10,7 +10,11 @@ import {
 
 const Signin = () => {
   const dispatch = useDispatch();
-  const { loading, error: errorMessage } = useSelector((state) => state.user);
+  const {
+    loading,
+    error: errorMessage,
+    currentUser,
+  } = useSelector((state) => state.user);
   const [formData, setFormData] = useState({});
   const [success, setSuccess] = useState(null);
 
@@ -48,7 +52,7 @@ const Signin = () => {
       }
 
       const data = await res.json();
-      dispatch(signInSuccess(data.user));
+      dispatch(signInSuccess(data));
       setSuccess(data.message);
       window.location.href = "/";
     } catch (error) {
@@ -111,6 +115,13 @@ const Signin = () => {
             )}
             {success && <p className="text-green-500 mt-2">{success}</p>}
           </form>
+          {currentUser && (
+            <div className="flex flex-col mt-4">
+              <p>Logged in as:</p>
+              <p>Username: {currentUser.username}</p>
+              <p>Email: {currentUser.email}</p>
+            </div>
+          )}
           <div className="flex gap-2 text-sm mt-5">
             <span>Don't have an account? </span>
             <Link
