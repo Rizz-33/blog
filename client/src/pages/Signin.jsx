@@ -2,6 +2,7 @@ import { Button, Label, TextInput } from "flowbite-react";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import GoogleAuth from "../components/GoogleAuth";
 import {
   signInFailure,
   signInStart,
@@ -106,6 +107,7 @@ const Signin = () => {
             >
               {loading ? "Signing In..." : "Sign In"}
             </Button>
+            <GoogleAuth />
             {errorMessage && (
               <p className="text-red-500 mt-2">{errorMessage}</p>
             )}
