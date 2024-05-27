@@ -30,11 +30,23 @@ const Signin = () => {
         },
         body: JSON.stringify(formData),
       });
+
       if (!res.ok) {
-        const errorData = await res.json();
-        dispatch(signInFailure(errorData.message || "Sign-in failed"));
-        throw new Error(errorData.message || "Sign-in failed");
+        const contentType = res.headers.get("content-type");
+        let errorMessage = "Sign-in failed";
+
+        if (contentType && contentType.includes("application/json")) {
+          const errorData = await res.json();
+          errorMessage = errorData.message || errorMessage;
+        } else {
+          const text = await res.text();
+          errorMessage = text || errorMessage;
+        }
+
+        dispatch(signInFailure(errorMessage));
+        throw new Error(errorMessage);
       }
+
       const data = await res.json();
       dispatch(signInSuccess(data));
       setSuccess(data.message);
