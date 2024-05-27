@@ -134,7 +134,7 @@ func SignIn(w http.ResponseWriter, r *http.Request) {
 	lastSignIn := time.Now()
 	_, err = collection.UpdateOne(context.Background(), bson.M{"username": user.Username}, bson.M{"$set": bson.M{"lastSignIn": lastSignIn}})
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError) // Update error handling
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
