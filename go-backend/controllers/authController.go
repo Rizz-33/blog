@@ -74,7 +74,15 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := map[string]string{"message": "Sign-up successful"}
+	response := map[string]interface{}{
+		"message": "Sign-up successful",
+		"user": map[string]interface{}{
+			"id":        user.ID.Hex(),
+			"username":  user.Username,
+			"email":     user.Email,
+			"createdAt": user.Timestamp,
+		},
+	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
 }
@@ -123,6 +131,13 @@ func SignIn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	lastSignIn := time.Now()
+	_, err = collection.UpdateOne(context.Background(), bson.M{"username": user.Username}, bson.M{"$set": bson.M{"lastSignIn": lastSignIn}})
+	if err != nil {
+		http.Error(w, "Failed to update last sign-in time", http.StatusInternalServerError)
+		return
+	}
+
 	http.SetCookie(w, &http.Cookie{
 		Name:    "jwt",
 		Value:   token,
@@ -131,12 +146,16 @@ func SignIn(w http.ResponseWriter, r *http.Request) {
 	})
 
 	response := map[string]interface{}{
-		"message":  "Sign-in successful",
-		"username": user.Username,
-		"email":    user.Email,
-		"token":    token,
+		"message": "Sign-in successful",
+		"user": map[string]interface{}{
+			"id":        user.ID.Hex(),
+			"username":  user.Username,
+			"email":     user.Email,
+			"createdAt": user.Timestamp,
+			"lastSignIn": lastSignIn,
+		},
+		"token": token,
 	}
-	
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
 }

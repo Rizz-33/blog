@@ -48,7 +48,7 @@ const Signin = () => {
       }
 
       const data = await res.json();
-      dispatch(signInSuccess(data));
+      dispatch(signInSuccess(data.user));
       setSuccess(data.message);
       window.location.href = "/";
     } catch (error) {
