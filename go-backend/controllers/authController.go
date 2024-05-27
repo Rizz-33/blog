@@ -146,14 +146,11 @@ func SignIn(w http.ResponseWriter, r *http.Request) {
 	})
 
 	response := map[string]interface{}{
-		"message": "Sign-in successful",
-		"user": map[string]interface{}{
-			"id":         user.ID.Hex(),
-			"username":   user.Username,
-			"email":      user.Email,
-			"createdAt":  user.Timestamp,
-			"lastSignIn": lastSignIn,
-		},
+		"id":         user.ID.Hex(),
+		"username":   user.Username,
+		"email":      user.Email,
+		"createdAt":  user.Timestamp,
+		"lastSignIn": lastSignIn,
 		"token": token,
 	}
 	w.Header().Set("Content-Type", "application/json")
