@@ -1,6 +1,6 @@
 import { Button, Label, TextInput } from "flowbite-react";
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import {
   signInFailure,
@@ -10,10 +10,9 @@ import {
 
 const Signin = () => {
   const dispatch = useDispatch();
+  const { loading, error: errorMessage } = useSelector((state) => state.user);
   const [formData, setFormData] = useState({});
-  const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
-  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -21,9 +20,7 @@ const Signin = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
     setSuccess(null);
-    setLoading(true);
     try {
       dispatch(signInStart());
       const res = await fetch("http://localhost:8000/api/signin", {
@@ -43,9 +40,11 @@ const Signin = () => {
       setSuccess(data.message);
       window.location.href = "/";
     } catch (error) {
-      setError(error.message || "An error occurred. Please try again later.");
-    } finally {
-      setLoading(false);
+      dispatch(
+        signInFailure(
+          error.message || "An error occurred. Please try again later."
+        )
+      );
     }
   };
 
@@ -95,7 +94,9 @@ const Signin = () => {
             >
               {loading ? "Signing In..." : "Sign In"}
             </Button>
-            {error && <p className="text-red-500 mt-2">{error}</p>}
+            {errorMessage && (
+              <p className="text-red-500 mt-2">{errorMessage}</p>
+            )}
             {success && <p className="text-green-500 mt-2">{success}</p>}
           </form>
           <div className="flex gap-2 text-sm mt-5">
