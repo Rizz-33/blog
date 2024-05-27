@@ -1,8 +1,15 @@
 import { Button, Label, TextInput } from "flowbite-react";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import {
+  signInFailure,
+  signInStart,
+  signInSuccess,
+} from "../redux/user/userSlice";
 
 const Signin = () => {
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({});
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
@@ -18,6 +25,7 @@ const Signin = () => {
     setSuccess(null);
     setLoading(true);
     try {
+      dispatch(signInStart());
       const res = await fetch("http://localhost:8000/api/signin", {
         method: "POST",
         headers: {
@@ -27,9 +35,11 @@ const Signin = () => {
       });
       if (!res.ok) {
         const errorData = await res.json();
+        dispatch(signInFailure(errorData.message || "Sign-in failed"));
         throw new Error(errorData.message || "Sign-in failed");
       }
       const data = await res.json();
+      dispatch(signInSuccess(data));
       setSuccess(data.message);
       window.location.href = "/";
     } catch (error) {
