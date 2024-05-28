@@ -108,9 +108,6 @@ const Signin = () => {
               {loading ? "Signing In..." : "Sign In"}
             </Button>
             <GoogleAuth />
-            {errorMessage && (
-              <p className="text-red-500 mt-2">{errorMessage}</p>
-            )}
             {success && <p className="text-green-500 mt-2">{success}</p>}
           </form>
           <div className="flex gap-2 text-sm mt-5">
