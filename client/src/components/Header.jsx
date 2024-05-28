@@ -40,8 +40,34 @@ export default function Header() {
           <Dropdown
             arrowIcon={false}
             inline
-            label={<Avatar alt="user" />}
-          ></Dropdown>
+            label={<Avatar alt="user" rounded />}
+          >
+            <Dropdown.Item>
+              <div className="user-info p-4 text-center">
+                <strong className="block text-lg font-semibold">
+                  {currentUser.username}
+                </strong>
+                <p className="text-sm text-gray-600">{currentUser.email}</p>
+              </div>
+            </Dropdown.Item>
+            <Dropdown.Divider className="my-2" />
+            <Dropdown.Item className="p-4 hover:bg-gray-100">
+              <Link to="/profile" className="block text-center text-gray-800">
+                Profile
+              </Link>
+            </Dropdown.Item>
+            <Dropdown.Item className="p-4 hover:bg-gray-100">
+              <Link to="/settings" className="block text-center text-gray-800">
+                Settings
+              </Link>
+            </Dropdown.Item>
+            <Dropdown.Divider className="my-2" />
+            <Dropdown.Item className="p-4 hover:bg-gray-100">
+              <Link to="/signout" className="block text-center text-red-600">
+                Sign Out
+              </Link>
+            </Dropdown.Item>
+          </Dropdown>
         ) : (
           <Link to="/signin">
             <Button gradientDuoTone="purpleToPink" outline pill>
