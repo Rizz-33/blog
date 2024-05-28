@@ -34,7 +34,6 @@ const GoogleAuth = () => {
       console.log(error.message);
     }
   };
-
   return (
     <Button
       type="button"
@@ -48,5 +47,4 @@ const GoogleAuth = () => {
     </Button>
   );
 };
-
 export default GoogleAuth;
