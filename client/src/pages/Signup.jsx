@@ -1,7 +1,6 @@
 import { Button, Label, TextInput } from "flowbite-react";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import GoogleAuth from "../components/GoogleAuth";
 
 const Signup = () => {
   const [formData, setFormData] = useState({});
@@ -96,7 +95,6 @@ const Signup = () => {
             >
               {loading ? "Signing Up..." : "Sign Up"}
             </Button>
-            <GoogleAuth />
             {error && <p className="text-red-500 mt-2">{error}</p>}
             {success && <p className="text-green-500 mt-2">{success}</p>}
           </form>
