@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import FooterSec from "./components/Footer";
 import Header from "./components/Header";
-import PrivateUser from "./components/userPrivate";
+import PrivateUser from "./components/PrivateUser";
 import About from "./pages/About";
 import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
