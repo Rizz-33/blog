@@ -1,11 +1,14 @@
-import { Button, Navbar, TextInput } from "flowbite-react";
+import { Avatar, Button, Dropdown, Navbar, TextInput } from "flowbite-react";
 import React from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { FaMoon, FaSearch } from "react-icons/fa";
+import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 
 export default function Header() {
   const path = useLocation().pathname;
+
+  const { currentUser } = useSelector((state) => state.user);
 
   return (
     <Navbar className="border-b-2">
@@ -33,11 +36,48 @@ export default function Header() {
         <Button className="w-12 h-10 hidden sm:inline" color="gray" pill>
           <FaMoon />
         </Button>
-        <Link to="/signin">
-          <Button gradientDuoTone="purpleToPink" outline pill>
-            Sign In
-          </Button>
-        </Link>
+        {currentUser ? (
+          <Dropdown
+            arrowIcon={false}
+            inline
+            label={<Avatar alt="user" rounded />}
+          >
+            <Dropdown.Item>
+              <div className="user-info p-4 text-center">
+                <strong className="block text-lg font-semibold">
+                  {currentUser.username}
+                </strong>
+                <p className="text-sm text-gray-600">{currentUser.email}</p>
+              </div>
+            </Dropdown.Item>
+            <Dropdown.Divider className="my-2" />
+            <Dropdown.Item className="p-4 hover:bg-gray-100">
+              <Link
+                to="/dashboard?tab=profile"
+                className="block text-center text-gray-800"
+              >
+                Profile
+              </Link>
+            </Dropdown.Item>
+            <Dropdown.Item className="p-4 hover:bg-gray-100">
+              <Link to="/settings" className="block text-center text-gray-800">
+                Settings
+              </Link>
+            </Dropdown.Item>
+            <Dropdown.Divider className="my-2" />
+            <Dropdown.Item className="p-4 hover:bg-gray-100">
+              <Link to="/signout" className="block text-center text-red-600">
+                Sign Out
+              </Link>
+            </Dropdown.Item>
+          </Dropdown>
+        ) : (
+          <Link to="/signin">
+            <Button gradientDuoTone="purpleToPink" outline pill>
+              Sign In
+            </Button>
+          </Link>
+        )}
         <Navbar.Toggle />
       </div>
       <Navbar.Collapse>
