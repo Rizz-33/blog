@@ -6,8 +6,8 @@ const Profile = () => {
   const { currentUser } = useSelector((state) => state.user);
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-4">Profile</h1>
+    <div className="max-w-lg mx-auto p-3 w-full">
+      <h1 className="text-2xl font-bold mb-4 text-center">Profile</h1>
       <div className="min-h-screen flex flex-col items-center py-8">
         <div className="flex flex-col">
           <form className="flex flex-col items-center">
