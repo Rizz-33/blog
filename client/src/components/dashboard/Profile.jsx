@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 
 const Profile = () => {
   const { currentUser } = useSelector((state) => state.user);
   const [imageFile, setImageFile] = useState(null);
   const [imageURL, setImageURL] = useState(null);
+  const filePick = useRef();
 
   const handleImageInput = (e) => {
     const file = e.target.files[0];
@@ -18,7 +19,6 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    // Clean up the object URL to avoid memory leaks
     return () => {
       if (imageURL) {
         URL.revokeObjectURL(imageURL);
@@ -26,7 +26,6 @@ const Profile = () => {
     };
   }, [imageURL]);
 
-  // Placeholder image URL
   const placeholderImageURL = "https://www.w3schools.com/howto/img_avatar.png";
 
   return (
@@ -34,10 +33,17 @@ const Profile = () => {
       <h1 className="text-2xl font-bold mb-4 text-center">Profile</h1>
       <div className="min-h-screen flex flex-col items-center py-8">
         <div className="flex flex-col">
-          <input type="file" accept="image/*" onChange={handleImageInput} />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageInput}
+            ref={filePick}
+            hidden
+          />
           <form className="flex flex-col items-center">
             <div className="w-42 h-42 cursor-pointer mb-4">
               <img
+                onClick={() => filePick.current.click()}
                 alt="user"
                 className="rounded-full w-36 h-36 border-8 object-cover border-lightgray hover:border-blue-500 transition-all duration-300"
                 src={imageURL || currentUser?.avatarUrl || placeholderImageURL}
