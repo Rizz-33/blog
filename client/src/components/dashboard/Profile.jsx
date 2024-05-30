@@ -18,6 +18,7 @@ const Profile = () => {
   };
 
   useEffect(() => {
+    // Clean up the object URL to avoid memory leaks
     return () => {
       if (imageURL) {
         URL.revokeObjectURL(imageURL);
@@ -25,8 +26,8 @@ const Profile = () => {
     };
   }, [imageURL]);
 
-  const placeholderImageURL =
-    "https://via.placeholder.com/150?text=Profile+Image";
+  // Placeholder image URL
+  const placeholderImageURL = "https://www.w3schools.com/howto/img_avatar.png";
 
   return (
     <div className="max-w-lg mx-auto p-3 w-full">
@@ -38,7 +39,7 @@ const Profile = () => {
             <div className="w-42 h-42 cursor-pointer mb-4">
               <img
                 alt="user"
-                className="rounded-full w-42 h-42 border-8 object-cover border-lightgray hover:border-blue-500 transition-all duration-300"
+                className="rounded-full w-36 h-36 border-8 object-cover border-lightgray hover:border-blue-500 transition-all duration-300"
                 src={imageURL || currentUser?.avatarUrl || placeholderImageURL}
               />
             </div>
