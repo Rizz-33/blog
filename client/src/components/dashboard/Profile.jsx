@@ -13,10 +13,18 @@ const Profile = () => {
       setImageFile(file);
       const objectURL = URL.createObjectURL(file);
       setImageURL(objectURL);
+      localStorage.setItem("userAvatar", objectURL);
     } else {
       console.error("The selected file is not an image.");
     }
   };
+
+  useEffect(() => {
+    const storedAvatar = localStorage.getItem("userAvatar");
+    if (storedAvatar) {
+      setImageURL(storedAvatar);
+    }
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -46,7 +54,7 @@ const Profile = () => {
                 onClick={() => filePick.current.click()}
                 alt="user"
                 className="rounded-full w-36 h-36 border-8 object-cover border-lightgray hover:border-blue-500 transition-all duration-300"
-                src={imageURL || currentUser?.avatarUrl || placeholderImageURL}
+                src={imageURL || placeholderImageURL}
               />
             </div>
             <h2 className="text-xl font-semibold text-gray-900">
