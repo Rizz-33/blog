@@ -24,31 +24,41 @@ const CustomSidebar = () => {
               active={tab === "profile"}
               icon={HiUser}
               labelColor="dark"
+              as="div"
             >
               Profile
             </Sidebar.Item>
           </Link>
-          <Sidebar.Item
-            active={tab === "settings"}
-            icon={HiCog}
-            labelColor="info"
-          >
-            Settings
-          </Sidebar.Item>
-          <Sidebar.Item
-            active={tab === "signout"}
-            icon={HiLogout}
-            labelColor="warning"
-          >
-            Sign Out
-          </Sidebar.Item>
-          <Sidebar.Item
-            active={tab === "delete"}
-            icon={HiTrash}
-            labelColor="danger"
-          >
-            Delete My Account
-          </Sidebar.Item>
+          <Link to="/dashboard?tab=settings">
+            <Sidebar.Item
+              active={tab === "settings"}
+              icon={HiCog}
+              labelColor="info"
+              as="div"
+            >
+              Settings
+            </Sidebar.Item>
+          </Link>
+          <Link to="/dashboard?tab=signout">
+            <Sidebar.Item
+              active={tab === "signout"}
+              icon={HiLogout}
+              labelColor="warning"
+              as="div"
+            >
+              Sign Out
+            </Sidebar.Item>
+          </Link>
+          <Link to="/dashboard?tab=delete">
+            <Sidebar.Item
+              active={tab === "delete"}
+              icon={HiTrash}
+              labelColor="danger"
+              as="div"
+            >
+              Delete My Account
+            </Sidebar.Item>
+          </Link>
         </Sidebar.ItemGroup>
       </Sidebar.Items>
     </Sidebar>
