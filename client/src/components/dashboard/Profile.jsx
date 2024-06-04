@@ -65,7 +65,7 @@ const Profile = () => {
                 src={imageURL || placeholderImageURL}
               />
             </div>
-            <div className="mb-4 w-full">
+            <div className="mb-4 w-full max-w-md">
               <label
                 className="block text-sm font-medium text-gray-300 mb-1"
                 htmlFor="username"
@@ -82,7 +82,7 @@ const Profile = () => {
                 style={{ borderRadius: "20px" }}
               />
             </div>
-            <div className="mb-4 w-full">
+            <div className="mb-4 w-full max-w-md">
               <label
                 className="block text-sm font-medium text-gray-300 mb-1"
                 htmlFor="password"
@@ -99,7 +99,7 @@ const Profile = () => {
                 style={{ borderRadius: "20px" }}
               />
             </div>
-            <div className="mb-4 w-full">
+            <div className="mb-4 w-full max-w-md">
               <label
                 className="block text-sm font-medium text-gray-300 mb-1"
                 htmlFor="email"
@@ -116,7 +116,7 @@ const Profile = () => {
                 style={{ borderRadius: "20px" }}
               />
             </div>
-            <div className="mt-4 w-full">
+            <div className="mt-4 w-full max-w-md">
               <Button gradientDuoTone="purpleToPink" pill className="w-full">
                 Update Profile
               </Button>
