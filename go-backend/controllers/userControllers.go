@@ -1,8 +1,11 @@
 package controllers
 
 import (
+	"context"
+	"encoding/json"
 	"net/http"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -17,8 +20,22 @@ type User struct {
 }
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("User data retrieved"))
+    username := r.URL.Query().Get("username")
+    if username == "" {
+        http.Error(w, "Username is required", http.StatusBadRequest)
+        return
+    }
+
+    var user User
+    err := userCollection.FindOne(context.Background(), bson.M{"username": username}).Decode(&user)
+    if err != nil {
+        http.Error(w, "User not found", http.StatusNotFound)
+        return
+    }
+
+    json.NewEncoder(w).Encode(user)
 }
+
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("User created"))
