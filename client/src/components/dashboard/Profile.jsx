@@ -23,8 +23,37 @@ const Profile = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const user = {
+      id: currentUser._id,
+      username,
+      password,
+      email,
+    };
+
+    try {
+      const response = await fetch("/api/updateUser", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log(result.message);
+        alert("Profile updated successfully");
+      } else {
+        console.error("Failed to update profile");
+        alert("Failed to update profile");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("An error occurred while updating profile");
+    }
   };
 
   useEffect(() => {
