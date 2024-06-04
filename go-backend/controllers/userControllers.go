@@ -9,6 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type User struct {
@@ -42,10 +43,34 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
     json.NewEncoder(w).Encode(user)
 }
 
-
-
 func CreateUser(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("User created"))
+	var user User
+	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
+		http.Error(w, "Invalid request payload", http.StatusBadRequest)
+		return
+	}
+	defer r.Body.Close()
+
+	if user.Username == "" || user.Email == "" || user.Password == "" {
+		http.Error(w, "Username, email, and password are required", http.StatusBadRequest)
+		return
+	}
+
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	if err != nil {
+		http.Error(w, "Failed to hash password", http.StatusInternalServerError)
+		return
+	}
+	user.Password = string(hashedPassword)
+	user.Timestamp = time.Now()
+
+	_, err = userCollection.InsertOne(context.Background(), user)
+	if err != nil {
+		http.Error(w, "Failed to create user", http.StatusInternalServerError)
+		return
+	}
+
+	json.NewEncoder(w).Encode(map[string]string{"message": "User created successfully"})
 }
 
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
