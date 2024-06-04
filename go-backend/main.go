@@ -56,10 +56,14 @@ func main() {
     }
 
     database = client.Database("test")
-    controllers.InitializeDatabase(database)
+
+    // Initialize controllers with the database connection
+    controllers.InitializeUserController(database)
+    controllers.InitializeAuthController(database)
 
     router := mux.NewRouter()
     routes.UserRoutes(router)
+    routes.AuthRoutes(router)
 
     log.Println("Starting server on :8000")
     log.Fatal(http.ListenAndServe(":8000", withCORS(router)))

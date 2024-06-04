@@ -4,19 +4,25 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+type User struct {
+	ID        primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
+	Username  string             `bson:"username" json:"username"`
+	Email     string             `bson:"email" json:"email"`
+	Password  string             `bson:"password" json:"password"`
+	Timestamp time.Time          `bson:"timestamp" json:"timestamp"`
+}
+
 var userCollection *mongo.Collection
 
-type User struct {
-    ID       primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
-    Username string             `bson:"username" json:"username"`
-    Email    string             `bson:"email" json:"email"`
-    Password string             `bson:"password" json:"password"`
+func InitializeUserController(db *mongo.Database) {
+    userCollection = db.Collection("users")
 }
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
@@ -35,6 +41,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 
     json.NewEncoder(w).Encode(user)
 }
+
 
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {

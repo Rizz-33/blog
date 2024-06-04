@@ -1,12 +1,11 @@
 package routes
 
 import (
-	"net/http"
-
 	"github.com/Rizz-33/blog/go-backend/controllers"
+	"github.com/gorilla/mux"
 )
 
-func AuthRoutes(mux *http.ServeMux) {
-	mux.HandleFunc("/api/signup", controllers.SignUp)
-	mux.HandleFunc("/api/signin", controllers.SignIn)
+func AuthRoutes(router *mux.Router) {
+	router.HandleFunc("/signup", controllers.SignUp).Methods("POST", "OPTIONS")
+	router.HandleFunc("/signin", controllers.SignIn).Methods("POST", "OPTIONS")
 }
