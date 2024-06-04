@@ -1,3 +1,4 @@
+import { Button } from "flowbite-react";
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 
@@ -5,6 +6,9 @@ const Profile = () => {
   const { currentUser } = useSelector((state) => state.user);
   const [imageFile, setImageFile] = useState(null);
   const [imageURL, setImageURL] = useState(null);
+  const [username, setUsername] = useState(currentUser?.username || "");
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState(currentUser?.email || "");
   const filePick = useRef();
 
   const handleImageInput = (e) => {
@@ -17,6 +21,10 @@ const Profile = () => {
     } else {
       console.error("The selected file is not an image.");
     }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
   };
 
   useEffect(() => {
@@ -37,7 +45,7 @@ const Profile = () => {
   const placeholderImageURL = "https://www.w3schools.com/howto/img_avatar.png";
 
   return (
-    <div className="max-w-lg mx-auto p-3 w-full">
+    <div className="max-w-lg mx-auto p-6 w-full">
       <h1 className="text-2xl font-bold mb-4 text-center">Profile</h1>
       <div className="min-h-screen flex flex-col items-center py-8">
         <div className="flex flex-col">
@@ -48,22 +56,71 @@ const Profile = () => {
             ref={filePick}
             hidden
           />
-          <form className="flex flex-col items-center">
+          <form className="flex flex-col items-center" onSubmit={handleSubmit}>
             <div className="w-42 h-42 cursor-pointer mb-4">
               <img
                 onClick={() => filePick.current.click()}
                 alt="user"
-                className="rounded-full w-36 h-36 border-8 object-cover border-lightgray hover:border-blue-500 transition-all duration-300"
+                className="rounded-full w-36 h-36 border-4 border-lightgray hover:border-purple-500 transition-all duration-300"
                 src={imageURL || placeholderImageURL}
               />
             </div>
-            <h2 className="text-xl font-semibold text-gray-900">
-              {currentUser?.name}
-            </h2>
-            <h3 className="text-lg font-medium text-gray-600">
-              @{currentUser?.username}
-            </h3>
-            <p className="text-gray-600">{currentUser?.email}</p>
+            <div className="mb-4 w-full">
+              <label
+                className="block text-sm font-medium text-gray-300 mb-1"
+                htmlFor="username"
+              >
+                Username
+              </label>
+              <input
+                id="username"
+                type="text"
+                className="border border-gray-400 mb-2 p-2 rounded-lg focus:outline-none focus:border-purple-500 w-full"
+                placeholder="Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                style={{ borderRadius: "20px" }}
+              />
+            </div>
+            <div className="mb-4 w-full">
+              <label
+                className="block text-sm font-medium text-gray-300 mb-1"
+                htmlFor="password"
+              >
+                Password
+              </label>
+              <input
+                id="password"
+                type="password"
+                className="border border-gray-400 mb-2 p-2 rounded-lg focus:outline-none focus:border-purple-500 w-full"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                style={{ borderRadius: "20px" }}
+              />
+            </div>
+            <div className="mb-4 w-full">
+              <label
+                className="block text-sm font-medium text-gray-300 mb-1"
+                htmlFor="email"
+              >
+                Email
+              </label>
+              <input
+                id="email"
+                type="email"
+                className="border border-gray-400 mb-2 p-2 rounded-lg focus:outline-none focus:border-purple-500 w-full"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                style={{ borderRadius: "20px" }}
+              />
+            </div>
+            <div className="mt-4 w-full">
+              <Button gradientDuoTone="purpleToPink" pill className="w-full">
+                Update Profile
+              </Button>
+            </div>
           </form>
         </div>
       </div>
