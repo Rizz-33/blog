@@ -74,7 +74,34 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("User updated"))
+	var user User
+	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
+		http.Error(w, "Invalid request payload", http.StatusBadRequest)
+		return
+	}
+	defer r.Body.Close()
+
+	if user.ID == primitive.NilObjectID {
+		http.Error(w, "User ID is required", http.StatusBadRequest)
+		return
+	}
+
+	update := bson.M{
+		"$set": bson.M{
+			"username": user.Username,
+			"email":    user.Email,
+			"password": user.Password,
+			"timestamp": time.Now(),
+		},
+	}
+
+	_, err := userCollection.UpdateByID(context.Background(), user.ID, update)
+	if err != nil {
+		http.Error(w, "Failed to update user", http.StatusInternalServerError)
+		return
+	}
+
+	json.NewEncoder(w).Encode(map[string]string{"message": "User updated successfully"})
 }
 
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
