@@ -104,6 +104,19 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]string{"message": "User updated successfully"})
 }
 
+
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("User deleted"))
+	username := r.URL.Query().Get("username")
+	if username == "" {
+		http.Error(w, "Username is required", http.StatusBadRequest)
+		return
+	}
+
+	_, err := userCollection.DeleteOne(context.Background(), bson.M{"username": username})
+	if err != nil {
+		http.Error(w, "Failed to delete user", http.StatusInternalServerError)
+		return
+	}
+
+	json.NewEncoder(w).Encode(map[string]string{"message": "User deleted successfully"})
 }
