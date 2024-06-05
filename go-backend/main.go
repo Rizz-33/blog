@@ -57,7 +57,6 @@ func main() {
 
     database = client.Database("test")
 
-    // Initialize controllers with the database connection
     controllers.InitializeUserController(database)
     controllers.InitializeDatabase(database)
 
