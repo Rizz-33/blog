@@ -37,7 +37,7 @@ const Profile = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/users/${currentUser._id}`,
+        `http://localhost:8000/users/${currentUser._id}`,
         {
           method: "PUT",
           headers: {
