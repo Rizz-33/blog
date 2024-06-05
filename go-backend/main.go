@@ -59,7 +59,7 @@ func main() {
 
     // Initialize controllers with the database connection
     controllers.InitializeUserController(database)
-    controllers.InitializeAuthController(database)
+    controllers.InitializeDatabase(database)
 
     router := mux.NewRouter()
     routes.UserRoutes(router)
