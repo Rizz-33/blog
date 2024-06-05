@@ -37,7 +37,7 @@ const Profile = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8000/users/${currentUser._id}`,
+        `http://localhost:8000/user/${currentUser._id}`,
         {
           method: "PUT",
           headers: {
@@ -52,8 +52,9 @@ const Profile = () => {
         console.log(result.message);
         alert("Profile updated successfully");
       } else {
-        console.error("Failed to update profile");
-        alert("Failed to update profile");
+        const errorData = await response.json();
+        console.error("Failed to update profile", errorData);
+        alert(`Failed to update profile: ${errorData.message}`);
       }
     } catch (error) {
       console.error("Error:", error);
