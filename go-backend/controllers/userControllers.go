@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -27,14 +28,15 @@ func InitializeUserController(db *mongo.Database) {
 }
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
-    username := r.URL.Query().Get("username")
-    if username == "" {
-        http.Error(w, "Username is required", http.StatusBadRequest)
+    params := mux.Vars(r)
+    id, err := primitive.ObjectIDFromHex(params["id"])
+    if err != nil {
+        http.Error(w, "Invalid user ID", http.StatusBadRequest)
         return
     }
 
     var user User
-    err := userCollection.FindOne(context.Background(), bson.M{"username": username}).Decode(&user)
+    err = userCollection.FindOne(context.Background(), bson.M{"_id": id}).Decode(&user)
     if err != nil {
         http.Error(w, "User not found", http.StatusNotFound)
         return
@@ -42,6 +44,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 
     json.NewEncoder(w).Encode(user)
 }
+
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	var user User
