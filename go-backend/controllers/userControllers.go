@@ -117,20 +117,20 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
     json.NewEncoder(w).Encode(map[string]string{"message": "User updated successfully"})
 }
 
-
-
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
-	username := r.URL.Query().Get("username")
-	if username == "" {
-		http.Error(w, "Username is required", http.StatusBadRequest)
-		return
-	}
+    params := mux.Vars(r)
+    id, err := primitive.ObjectIDFromHex(params["id"])
+    if err != nil {
+        http.Error(w, "Invalid user ID", http.StatusBadRequest)
+        return
+    }
 
-	_, err := userCollection.DeleteOne(context.Background(), bson.M{"username": username})
-	if err != nil {
-		http.Error(w, "Failed to delete user", http.StatusInternalServerError)
-		return
-	}
+    _, err = userCollection.DeleteOne(context.Background(), bson.M{"_id": id})
+    if err != nil {
+        http.Error(w, "Failed to delete user", http.StatusInternalServerError)
+        return
+    }
 
-	json.NewEncoder(w).Encode(map[string]string{"message": "User deleted successfully"})
+    json.NewEncoder(w).Encode(map[string]string{"message": "User deleted successfully"})
 }
+
