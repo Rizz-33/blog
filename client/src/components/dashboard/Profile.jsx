@@ -29,12 +29,15 @@ const Profile = () => {
     const user = {
       id: currentUser._id,
       username,
-      password,
       email,
     };
 
+    if (password) {
+      user.password = password;
+    }
+
     try {
-      const response = await fetch("/api/updateUser", {
+      const response = await fetch("/user", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -146,7 +149,12 @@ const Profile = () => {
               />
             </div>
             <div className="mt-4 w-full max-w-md">
-              <Button gradientDuoTone="purpleToPink" pill className="w-full">
+              <Button
+                type="submit"
+                gradientDuoTone="purpleToPink"
+                pill
+                className="w-full"
+              >
                 Update Profile
               </Button>
             </div>
