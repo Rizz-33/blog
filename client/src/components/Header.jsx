@@ -7,7 +7,6 @@ import { Link, useLocation } from "react-router-dom";
 
 export default function Header() {
   const path = useLocation().pathname;
-
   const { currentUser } = useSelector((state) => state.user);
 
   return (
@@ -48,22 +47,28 @@ export default function Header() {
               </div>
             </Dropdown.Item>
             <Dropdown.Divider className="my-2" />
-            <Dropdown.Item className="p-4 hover:bg-gray-100">
+            <Dropdown.Item>
               <Link
-                to="/dashboard/?tab=profile"
+                to="/dashboard?tab=profile"
                 className="block text-center text-gray-800"
               >
                 Profile
               </Link>
             </Dropdown.Item>
-            <Dropdown.Item className="p-4 hover:bg-gray-100">
-              <Link to="/settings" className="block text-center text-gray-800">
+            <Dropdown.Item>
+              <Link
+                to="/dashboard?tab=settings"
+                className="block text-center text-gray-800"
+              >
                 Settings
               </Link>
             </Dropdown.Item>
             <Dropdown.Divider className="my-2" />
-            <Dropdown.Item className="p-4 hover:bg-gray-100">
-              <Link to="/signout" className="block text-center text-red-600">
+            <Dropdown.Item>
+              <Link
+                to="/dashboard?tab=signout"
+                className="block text-center text-red-600"
+              >
                 Sign Out
               </Link>
             </Dropdown.Item>
