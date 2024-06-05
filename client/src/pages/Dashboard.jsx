@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import DeleteProfile from "../components/dashboard/Delete";
 import Profile from "../components/dashboard/Profile";
 import Sidebar from "../components/dashboard/Sidebar";
+import SignOut from "../components/dashboard/Signout";
 
 const Dashboard = () => {
   const location = useLocation();
@@ -23,6 +24,7 @@ const Dashboard = () => {
       </div>
       {tab === "profile" && <Profile />}
       {tab === "delete" && <DeleteProfile />}
+      {tab === "signout" && <SignOut />}
     </div>
   );
 };
