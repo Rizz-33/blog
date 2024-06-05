@@ -1,9 +1,16 @@
 import { Button } from "flowbite-react";
 import React, { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  updateUserFailure,
+  updateUserStart,
+  updateUserSuccess,
+} from "../../redux/user/userSlice";
 
 const Profile = () => {
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser, loading, error } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+
   const [imageFile, setImageFile] = useState(null);
   const [imageURL, setImageURL] = useState(null);
   const [username, setUsername] = useState(currentUser?.username || "");
@@ -26,6 +33,12 @@ const Profile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!currentUser || !currentUser.id) {
+      console.error("Current user ID is undefined");
+      alert("Current user ID is undefined");
+      return;
+    }
+
     const user = {
       username,
       email,
@@ -35,9 +48,11 @@ const Profile = () => {
       user.password = password;
     }
 
+    dispatch(updateUserStart());
+
     try {
       const response = await fetch(
-        `http://localhost:8000/user/${currentUser._id}`,
+        `http://localhost:8000/user/${currentUser.id}`,
         {
           method: "PUT",
           headers: {
@@ -49,14 +64,17 @@ const Profile = () => {
 
       if (response.ok) {
         const result = await response.json();
+        dispatch(updateUserSuccess(user));
         console.log(result.message);
         alert("Profile updated successfully");
       } else {
         const errorData = await response.json();
+        dispatch(updateUserFailure(errorData.message));
         console.error("Failed to update profile", errorData);
         alert(`Failed to update profile: ${errorData.message}`);
       }
     } catch (error) {
+      dispatch(updateUserFailure(error.toString()));
       console.error("Error:", error);
       alert("An error occurred while updating profile");
     }
@@ -78,6 +96,10 @@ const Profile = () => {
   }, [imageURL]);
 
   const placeholderImageURL = "https://www.w3schools.com/howto/img_avatar.png";
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="max-w-lg mx-auto p-6 w-full">
@@ -152,10 +174,16 @@ const Profile = () => {
               />
             </div>
             <div className="mt-4 w-full max-w-md">
-              <Button gradientDuoTone="purpleToPink" pill className="w-full">
+              <Button
+                gradientDuoTone="purpleToPink"
+                pill
+                className="w-full"
+                type="submit"
+              >
                 Update Profile
               </Button>
             </div>
+            {error && <div className="mt-4 text-red-500">{error}</div>}
           </form>
         </div>
       </div>
