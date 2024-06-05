@@ -74,34 +74,42 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
-	var user User
-	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
-		http.Error(w, "Invalid request payload", http.StatusBadRequest)
-		return
-	}
-	defer r.Body.Close()
+    var user User
+    if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
+        http.Error(w, "Invalid request payload", http.StatusBadRequest)
+        return
+    }
+    defer r.Body.Close()
 
-	if user.ID == primitive.NilObjectID {
-		http.Error(w, "User ID is required", http.StatusBadRequest)
-		return
-	}
+    if user.ID == primitive.NilObjectID {
+        http.Error(w, "User ID is required", http.StatusBadRequest)
+        return
+    }
 
-	update := bson.M{
-		"$set": bson.M{
-			"username": user.Username,
-			"email":    user.Email,
-			"password": user.Password,
-			"timestamp": time.Now(),
-		},
-	}
+    updateFields := bson.M{
+        "username": user.Username,
+        "email":    user.Email,
+        "timestamp": time.Now(),
+    }
 
-	_, err := userCollection.UpdateByID(context.Background(), user.ID, update)
-	if err != nil {
-		http.Error(w, "Failed to update user", http.StatusInternalServerError)
-		return
-	}
+    if user.Password != "" {
+        hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+        if err != nil {
+            http.Error(w, "Failed to hash password", http.StatusInternalServerError)
+            return
+        }
+        updateFields["password"] = string(hashedPassword)
+    }
 
-	json.NewEncoder(w).Encode(map[string]string{"message": "User updated successfully"})
+    update := bson.M{"$set": updateFields}
+
+    _, err := userCollection.UpdateByID(context.Background(), user.ID, update)
+    if err != nil {
+        http.Error(w, "Failed to update user", http.StatusInternalServerError)
+        return
+    }
+
+    json.NewEncoder(w).Encode(map[string]string{"message": "User updated successfully"})
 }
 
 
