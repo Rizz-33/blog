@@ -77,17 +77,19 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
+    params := mux.Vars(r)
+    id, err := primitive.ObjectIDFromHex(params["id"])
+    if err != nil {
+        http.Error(w, "Invalid user ID", http.StatusBadRequest)
+        return
+    }
+
     var user User
     if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
         http.Error(w, "Invalid request payload", http.StatusBadRequest)
         return
     }
     defer r.Body.Close()
-
-    if user.ID == primitive.NilObjectID {
-        http.Error(w, "User ID is required", http.StatusBadRequest)
-        return
-    }
 
     updateFields := bson.M{
         "username": user.Username,
@@ -106,7 +108,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 
     update := bson.M{"$set": updateFields}
 
-    _, err := userCollection.UpdateByID(context.Background(), user.ID, update)
+    _, err = userCollection.UpdateByID(context.Background(), id, update)
     if err != nil {
         http.Error(w, "Failed to update user", http.StatusInternalServerError)
         return
@@ -114,6 +116,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 
     json.NewEncoder(w).Encode(map[string]string{"message": "User updated successfully"})
 }
+
 
 
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
