@@ -50,7 +50,7 @@ export default function Header() {
             <Dropdown.Divider className="my-2" />
             <Dropdown.Item className="p-4 hover:bg-gray-100">
               <Link
-                to="/dashboard?tab=profile"
+                to="/dashboard/?tab=profile"
                 className="block text-center text-gray-800"
               >
                 Profile
