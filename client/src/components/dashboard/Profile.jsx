@@ -27,7 +27,6 @@ const Profile = () => {
     e.preventDefault();
 
     const user = {
-      id: currentUser._id,
       username,
       email,
     };
@@ -37,13 +36,16 @@ const Profile = () => {
     }
 
     try {
-      const response = await fetch("/user", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(user),
-      });
+      const response = await fetch(
+        `http://localhost:8080/users/${currentUser._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(user),
+        }
+      );
 
       if (response.ok) {
         const result = await response.json();
@@ -149,12 +151,7 @@ const Profile = () => {
               />
             </div>
             <div className="mt-4 w-full max-w-md">
-              <Button
-                type="submit"
-                gradientDuoTone="purpleToPink"
-                pill
-                className="w-full"
-              >
+              <Button gradientDuoTone="purpleToPink" pill className="w-full">
                 Update Profile
               </Button>
             </div>
